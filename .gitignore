@@ -5,3 +5,5 @@
 .vscode/ipch
 
 /src/private_data.h
+
+/lib/SocketIoClient/examples
