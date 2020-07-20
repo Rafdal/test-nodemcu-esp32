@@ -6,4 +6,4 @@
 
 /src/private_data.h
 
-/lib/SocketIoClient/examples
+# /lib/SocketIoClient/examples
