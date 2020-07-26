@@ -5,5 +5,6 @@
 .vscode/ipch
 
 /src/private_data.h
+/lib/LoRa/
 
 # /lib/SocketIoClient/examples
