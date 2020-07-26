@@ -23,7 +23,7 @@ unsigned long timerDelay = 15000;
 
 
 #include <OneButton.h>
-OneButton btn(A3, true);
+OneButton btn(4, true);
 
 
 #include <master/master.h>
@@ -35,8 +35,7 @@ SocketIoClient webSocket;
 
 void setup()
 {
-	Serial.begin(576000);
-
+	Serial.begin(576000);	
 	WiFi.mode(WIFI_STA);
 	WiFi.begin(ssid, password);
 	Serial.println(F("Connecting"));
@@ -54,6 +53,15 @@ void setup()
 		// ! Expresiones lambda en C++
 		Serial.printf("Recibido payload: %s\n", payload);
 	});
+
+	webSocket.on("module:control", [](const char * payload, size_t length){
+		DEBUG("CONTROL")
+		device.Click();
+		packet_t p;
+		p.set(3, type.data.setState, 2);
+		lora.send(p);
+	});
+
     webSocket.begin(host, port);
 
 
