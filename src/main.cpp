@@ -29,13 +29,19 @@ OneButton btn(4, true);
 #include <master/master.h>
 Master device;
 
-
-#include <SocketIoClient.h>
-SocketIoClient webSocket;
+#include <mainWebSocket.h>
 
 void setup()
 {
-	Serial.begin(576000);	
+	pinMode(LED_BUILTIN, OUTPUT);
+	for (uint8_t i = 0; i < 10; i++)
+	{
+		digitalWrite(LED_BUILTIN, HIGH);
+		delay(20);
+		digitalWrite(LED_BUILTIN, LOW);
+		delay(50);
+	}
+	Serial.begin(576000);
 	WiFi.mode(WIFI_STA);
 	WiFi.begin(ssid, password);
 	Serial.println(F("Connecting"));
@@ -49,21 +55,8 @@ void setup()
 
 	lastTime = millis();
 
-	webSocket.on("chat:escribiendo", [](const char * payload, size_t length){
-		// ! Expresiones lambda en C++
-		Serial.printf("Recibido payload: %s\n", payload);
-	});
-
-	webSocket.on("module:control", [](const char * payload, size_t length){
-		DEBUG("CONTROL")
-		device.Click();
-		packet_t p;
-		p.set(3, type.data.setState, 2);
-		lora.send(p);
-	});
-
-    webSocket.begin(host, port);
-
+	// @ WebSockets
+	webSocketSetup();
 
 	// @ Master
 	device.begin();
@@ -75,7 +68,6 @@ void setup()
 	ctrl.setLoopPerSec([](){
 		device.runPerSec();
 	});
-
 
 	// Button Events
 	btn.attachLongPressStart([](){
@@ -102,7 +94,6 @@ void setup()
 
 void loop()
 {
-	webSocket.loop();
 	device.run();
 	ctrl.run();
 	btn.tick();
