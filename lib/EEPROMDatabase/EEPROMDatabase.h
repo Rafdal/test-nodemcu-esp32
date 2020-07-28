@@ -175,7 +175,7 @@ void EEPROMDatabase::set(uint8_t reg[], uint8_t idx)
 // true si esta VACIO. false si esta USADO
 bool EEPROMDatabase::available(uint8_t idx)
 {
-    return ((EEPROM.read(_eepos_(idx)) == 0) && (_eepos_(idx) != -1));
+    return (EEPROM.read(_eepos_(idx)) == 0) && (_eepos_(idx) != -1);
 }
 
 // -1 si no hay espacio libre. (>= 0) si hay

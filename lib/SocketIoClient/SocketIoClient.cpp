@@ -50,6 +50,8 @@ void SocketIoClient::webSocketEvent(WStype_t type, uint8_t * payload, size_t len
 		case WStype_BIN:
 			SOCKETIOCLIENT_DEBUG("[SIoC] get binary length: %u\n", length);
 			hexdump((uint32_t*) payload, length);
+		default:
+			SOCKETIOCLIENT_DEBUG("[SIoC] Unhandled WStype %u", type)
 		break;
 	}
 }

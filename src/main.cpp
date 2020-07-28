@@ -4,8 +4,10 @@
 #endif
 
 #include <Arduino.h>
-#include <EEPROM_emulator.h>
+// #include <EEPROM_emulator.h>
+#include <EEPROM.h>
 #include <eeprom_cleaning.h>
+#include <SPIFFS.h>
 #include <LoRa.h>
 #include <crc16.h>
 #include <FastCRC.h>
@@ -15,8 +17,7 @@
 #include <HTTPClient.h>
 const char *host = "192.168.1.114"; 
 const int port = 3000;
-unsigned long lastTime = 0;
-unsigned long timerDelay = 15000;
+
 // #include <google-get-request.h>
 
 #define USE_SERIAL Serial
@@ -31,6 +32,8 @@ Master device;
 
 #include <mainWebSocket.h>
 
+#include <LoRa.cpp>
+
 void setup()
 {
 	pinMode(LED_BUILTIN, OUTPUT);
@@ -42,6 +45,10 @@ void setup()
 		delay(50);
 	}
 	Serial.begin(576000);
+	EEPROM.begin(512);	
+
+
+	// % WiFi
 	WiFi.mode(WIFI_STA);
 	WiFi.begin(ssid, password);
 	Serial.println(F("Connecting"));
@@ -53,12 +60,33 @@ void setup()
 	Serial.print(F("\nConnected to WiFi network with IP Address: "));
 	Serial.println(WiFi.localIP());
 
-	lastTime = millis();
 
-	// @ WebSockets
+
+	// % WebSockets
+	webSocket.on("module:control", [](const char * payload, size_t length){
+		DEBUG("CONTROL")
+		device.Click();
+		device.network.setState(3, 2);
+		DEBUG("SENT")
+	});
+	webSocket.on("connect", [](const char * payload, size_t length){
+                DEBUG("CONECTADOUUUU")
+            });
+
+            webSocket.on("disconnect", [](const char * payload, size_t length){
+                DEBUG("HEY DISCONECTADOU")
+            });
+
+            webSocket.on("chat:escribiendo", [](const char * payload, size_t length){
+                // ! Expresiones lambda en C++
+                Serial.printf("Recibido payload: %s\n", payload);
+            });
+
+            // $ WebSocket Begin
+            webSocket.begin(host, port);
 	webSocketSetup();
 
-	// @ Master
+	// % Master
 	device.begin();
 	btn.setPressTicks(2000);
 
@@ -79,7 +107,26 @@ void setup()
 		DEBUG("DoubleClick")
 		device.DoubleClick();
 
+		uint8_t a = LoRa.readRegister(REG_FIFO_TX_BASE_ADDR);
+		uint8_t b = LoRa.readRegister(REG_FIFO_RX_BASE_ADDR);
+		uint8_t c = LoRa.readRegister(REG_LNA);
+		uint8_t d = LoRa.readRegister(REG_MODEM_CONFIG_3);
+
 		device.network.printClients();
+		Serial.printf("%u,\t%u,\t%u,\t%u\n", a, b, c, d);
+		
+		/* DEBUG("HEAP:")
+		uint32_t s = ESP.getHeapSize();
+		uint32_t f = ESP.getFreeHeap();
+		uint32_t max = ESP.getMaxAllocHeap();
+		uint32_t min = ESP.getMinFreeHeap();
+		Serial.printf("s: %u, f: %u, max: %u, min: %u\n", s, f, max, min); */
+		// LoRa.clearWriteError();
+		unsigned long beg,end;
+		beg = millis();
+		LoRa.begin(433E6);
+		end = millis();
+		Serial.println(end-beg);
 	});
 
 	btn.attachClick([](){
