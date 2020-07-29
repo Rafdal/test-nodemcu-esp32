@@ -4,9 +4,6 @@
 
 // #include <EEPROM.h>
 
-#ifdef ESP_H
-#define ASD
-#endif
 
 class EEPROMDatabase
 {

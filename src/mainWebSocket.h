@@ -8,7 +8,29 @@ TaskHandle_t TaskWebSocket;
 
 void webSocketSetup()
 {
-    // xTaskCreate()
+    // % WebSockets
+	webSocket.on("module:control", [](const char * payload, size_t length){
+
+		device.network.setState(3, 2);
+
+	});
+	webSocket.on("connect", [](const char * payload, size_t length){
+        DEBUG("CONECTADOUUUU")
+    });
+
+    webSocket.on("disconnect", [](const char * payload, size_t length){
+        DEBUG("HEY DISCONECTADOU")
+    });
+
+    webSocket.on("chat:escribiendo", [](const char * payload, size_t length){
+        // ! Expresiones lambda en C++
+        Serial.printf("Recibido payload: %s\n", payload);
+    });
+
+    // $ WebSocket Begin
+    webSocket.begin(host, port);
+
+
     xTaskCreatePinnedToCore(
         [](void * parameter){
             for(;;)

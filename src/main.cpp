@@ -7,7 +7,7 @@
 // #include <EEPROM_emulator.h>
 #include <EEPROM.h>
 #include <eeprom_cleaning.h>
-#include <SPIFFS.h>
+// #include <SPIFFS.h>
 #include <LoRa.h>
 #include <crc16.h>
 #include <FastCRC.h>
@@ -32,7 +32,6 @@ Master device;
 
 #include <mainWebSocket.h>
 
-#include <LoRa.cpp>
 
 void setup()
 {
@@ -60,30 +59,6 @@ void setup()
 	Serial.print(F("\nConnected to WiFi network with IP Address: "));
 	Serial.println(WiFi.localIP());
 
-
-
-	// % WebSockets
-	webSocket.on("module:control", [](const char * payload, size_t length){
-		DEBUG("CONTROL")
-		device.Click();
-		device.network.setState(3, 2);
-		DEBUG("SENT")
-	});
-	webSocket.on("connect", [](const char * payload, size_t length){
-                DEBUG("CONECTADOUUUU")
-            });
-
-            webSocket.on("disconnect", [](const char * payload, size_t length){
-                DEBUG("HEY DISCONECTADOU")
-            });
-
-            webSocket.on("chat:escribiendo", [](const char * payload, size_t length){
-                // ! Expresiones lambda en C++
-                Serial.printf("Recibido payload: %s\n", payload);
-            });
-
-            // $ WebSocket Begin
-            webSocket.begin(host, port);
 	webSocketSetup();
 
 	// % Master
@@ -132,10 +107,10 @@ void setup()
 	btn.attachClick([](){
 		DEBUG("Click")
 		device.Click();
-
+		/* 
 		packet_t p;
 		p.set(3, type.data.setState, 2);
-		lora.send(p);
+		lora.send(p); */
 	});
 }
 
