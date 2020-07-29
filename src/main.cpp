@@ -82,13 +82,13 @@ void setup()
 		DEBUG("DoubleClick")
 		device.DoubleClick();
 
-		uint8_t a = LoRa.readRegister(REG_FIFO_TX_BASE_ADDR);
-		uint8_t b = LoRa.readRegister(REG_FIFO_RX_BASE_ADDR);
-		uint8_t c = LoRa.readRegister(REG_LNA);
-		uint8_t d = LoRa.readRegister(REG_MODEM_CONFIG_3);
+		// uint8_t a = LoRa.readRegister(REG_FIFO_TX_BASE_ADDR);
+		// uint8_t b = LoRa.readRegister(REG_FIFO_RX_BASE_ADDR);
+		// uint8_t c = LoRa.readRegister(REG_LNA);
+		// uint8_t d = LoRa.readRegister(REG_MODEM_CONFIG_3);
 
 		device.network.printClients();
-		Serial.printf("%u,\t%u,\t%u,\t%u\n", a, b, c, d);
+		// Serial.printf("%u,\t%u,\t%u,\t%u\n", a, b, c, d);
 		
 		/* DEBUG("HEAP:")
 		uint32_t s = ESP.getHeapSize();
