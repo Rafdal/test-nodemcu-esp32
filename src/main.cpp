@@ -6,6 +6,7 @@
 #include <Arduino.h>
 // #include <EEPROM_emulator.h>
 #include <EEPROM.h>
+#include <ArduinoJson.h>
 #include <eeprom_cleaning.h>
 // #include <SPIFFS.h>
 #include <LoRa.h>
@@ -26,11 +27,12 @@ const int port = 3000;
 #include <OneButton.h>
 OneButton btn(4, true);
 
-
+// #define LORA_PRINT_DEBUG
 #include <master/master.h>
 Master device;
 
 #include <mainWebSocket.h>
+
 
 
 void setup()
@@ -45,7 +47,6 @@ void setup()
 	}
 	Serial.begin(576000);
 	EEPROM.begin(512);	
-
 
 	// % WiFi
 	WiFi.mode(WIFI_STA);
@@ -107,6 +108,7 @@ void setup()
 	btn.attachClick([](){
 		DEBUG("Click")
 		device.Click();
+
 		/* 
 		packet_t p;
 		p.set(3, type.data.setState, 2);

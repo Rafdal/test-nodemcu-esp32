@@ -15,14 +15,27 @@ void webSocketSetup()
 
 	});
 	webSocket.on("connect", [](const char * payload, size_t length){
-        DEBUG("CONECTADOUUUU")
+        DEBUG("CONNECTED")
+        StaticJsonDocument<64> json;
+        String jsonStr;
+        jsonStr.reserve(64);
+
+        json["mac"] = WiFi.macAddress();
+        json["sdk"] = ESP.getSdkVersion();
+        json["chip"] = ESP.getChipRevision();
+
+        serializeJson(json, jsonStr);
+        jsonStr.replace("\"", "\\\"");
+        jsonStr = '"' + jsonStr + '"';
+
+        webSocket.emit("module:connect", jsonStr.c_str());
     });
 
     webSocket.on("disconnect", [](const char * payload, size_t length){
         DEBUG("HEY DISCONECTADOU")
     });
 
-    webSocket.on("chat:escribiendo", [](const char * payload, size_t length){
+    webSocket.on("chat:mensaje", [](const char * payload, size_t length){
         // ! Expresiones lambda en C++
         Serial.printf("Recibido payload: %s\n", payload);
     });
