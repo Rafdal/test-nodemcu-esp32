@@ -6,21 +6,25 @@ SocketIoClient webSocket;
 
 TaskHandle_t TaskWebSocket;
 
+const char* user = {"Rafa"};
+
 void webSocketSetup()
 {
     // % WebSockets
 	webSocket.on("module:control", [](const char * payload, size_t length){
 
+        Serial.printf("Payload: %s", payload);
 		device.network.setState(3, 2);
 
 	});
 	webSocket.on("connect", [](const char * payload, size_t length){
         DEBUG("CONNECTED")
-        StaticJsonDocument<64> json;
+        StaticJsonDocument<128> json;
         String jsonStr;
-        jsonStr.reserve(64);
+        jsonStr.reserve(128);        
 
         json["mac"] = WiFi.macAddress();
+        json["user"] = user;
         json["sdk"] = ESP.getSdkVersion();
         json["chip"] = ESP.getChipRevision();
 
@@ -32,6 +36,8 @@ void webSocketSetup()
     });
 
     webSocket.on("disconnect", [](const char * payload, size_t length){
+        
+        
         DEBUG("HEY DISCONECTADOU")
     });
 

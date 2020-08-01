@@ -34,7 +34,6 @@ Master device;
 #include <mainWebSocket.h>
 
 
-
 void setup()
 {
 	pinMode(LED_BUILTIN, OUTPUT);

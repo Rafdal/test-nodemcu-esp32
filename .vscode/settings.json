@@ -3,5 +3,6 @@
         "functional": "cpp",
         "istream": "cpp",
         "ostream": "cpp"
-    }
+    },
+    "workbench.colorTheme": "Monokai Pro"
 }
